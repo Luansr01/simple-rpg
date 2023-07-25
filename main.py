@@ -37,7 +37,7 @@ def new_game():
 
     print("What is your name?")
     inp = input("\n:")
-    player = entity.Player(10, 10, 1, 1, 0, inp)
+    player = entity.Player(10, 10, 1, 1, inp)
 
 def game_over():
     global player
@@ -81,13 +81,13 @@ def battle(enemy_template):
     
 
     
-    while(player.hp > 0 and enemy.hp > 0):
+    while(player.is_alive and enemy.hp > 0):
         # UI code start
         clear()
-        print(f"HP:{player.hp}/{player.max_hp} ATK:{player.atk} DEF:{player.defense} EVADE:{player.evade} EXP:{player.exp}")
+        print(f"HP:{player.hp}/{player.max_hp} ATK:{player.atk} DEF:{player.defense} EVADE:{player.evade} EXP:{player.exp}/{player.required_exp}")
         print(f"\n{enemy.name} ({enemy.hp}/{enemy.max_hp})\n")
         log.Print()
-        print("\n1. Attack\n2. Defend\n\nc. Clear Log\nf. Flee")
+        print("\n1. Attack\n2. Defend\n3. Heal\n\nc. Clear Log\nf. Flee")
         # Ui code end
 
         inp = input("\n:").lower().strip()
@@ -96,12 +96,8 @@ def battle(enemy_template):
                 # Calculates and constrains damage dealt by player to not exceed the current enemy hp.
                 # If the enemy still has 1 or more hp, run nextRound()
                 dmg = calcDamage(enemy, player)
-                if enemy.hp - dmg < 0:
-                    enemy.hp = 0
-                else:
-                    enemy.hp -= dmg
-                    nextRound()
-                
+                enemy.hp -= dmg
+
                 # If the damage dealt by the player is 0, logs that the enemy dodged.
                 if dmg > 0:
                     log.AddLine(f"You dealt {dmg} Damage to {enemy.name}")
@@ -113,6 +109,9 @@ def battle(enemy_template):
                 player.defense *= 2
                 nextRound()
                 player.defense = player.base_defense
+            case "3":
+                # Heals the player for 10% of max hp.
+                player.hp += player.max_hp(10)
             case "c" | "C":
                 # Calls log #clear
                 log.Clear()
@@ -120,6 +119,9 @@ def battle(enemy_template):
                 pass
             case _:
                 log.AddLine("Please select a valid option.")
+
+        if player.is_alive:
+            nextRound()
 
     # If the enemy hp is 0 or less, the player gains exp, and that gain is logged.
     if enemy.hp <= 0 and player.hp > 0:
