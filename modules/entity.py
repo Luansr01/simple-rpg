@@ -42,13 +42,9 @@ class Entity:
         else:
             self._hp = new_hp
 
-    def _max_hp(self, percent=0):
-        if not percent == 0:
-            return self._max_hp * (percent / 100)
-        else:
-            return self._max_hp
-
-    max_hp = property(_max_hp)
+    @property
+    def max_hp(self):
+        return self._max_hp
 
     @property
     def atk(self):
@@ -73,6 +69,9 @@ class Entity:
     @is_alive.setter
     def is_alive(self):
         self.is_alive = not self.is_alive
+
+    def max_hp_percent(self, percent):
+        return self.max_hp * (percent/100)
 
 class Enemy(Entity):
     """This is a class representation of the Enemy type.

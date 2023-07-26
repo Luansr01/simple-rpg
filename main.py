@@ -37,7 +37,7 @@ def new_game():
 
     print("What is your name?")
     inp = input("\n:")
-    player = entity.Player(10, 10, 1, 1, inp)
+    player = entity.Player(20, 10, 1, 1, inp)
 
 def game_over():
     global player
@@ -111,7 +111,9 @@ def battle(enemy_template):
                 player.defense = player.base_defense
             case "3":
                 # Heals the player for 10% of max hp.
-                player.hp += player.max_hp(10)
+                heal = player.max_hp_percent(10)
+                player.hp += heal
+                log.AddLine(f"You healed yourself by {heal} HP!")
             case "c" | "C":
                 # Calls log #clear
                 log.Clear()
