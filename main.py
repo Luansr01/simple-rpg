@@ -2,12 +2,9 @@ from random import randint, choice
 import os
 import copy
 
-from modules import log, entity
+from modules import log, entity, enemies
 
 clear = lambda : os.system('cls')    
-
-
-entity.ENEMIES = {"slime": entity.Enemy("Slime", 10, 2, 5, 1, 2), "goblin": entity.Enemy("Goblin", 15, 4, 5, 1, 2)}
 
 log = log.Log()
 
@@ -70,8 +67,7 @@ def main_menu():
         case _:
              print("Please select a valid option\n")
 
-def battle(enemy_template):
-    enemy = copy.deepcopy(enemy_template)
+def battle(enemy):
     global player
 
     def nextRound():
@@ -140,7 +136,7 @@ def main_loop():
         if(player == None):
             main_menu()
         elif player.hp > 0:
-            battle(entity.ENEMIES[choice(list(entity.ENEMIES.keys()))])
+            battle(choice(enemies.enemy_list)())
         else:
             game_over()
 
